@@ -50,8 +50,8 @@ docker run -d \
   --name costweb \
   -p 8080:8080 \
   -v "$(pwd)/data:/app/data" \
-  costweb:local \
-  /bin/sh -lc 'cd /app && ln -sf /app/data/assets.db ./assets.db && exec /app/costweb'
+  -e DB_PATH=/app/data/assets.db \
+  costweb:local
 ```
 
 如果你是直接拉取 Docker Hub 镜像：
@@ -62,8 +62,8 @@ docker run -d \
   --name costweb \
   -p 8080:8080 \
   -v "$(pwd)/data:/app/data" \
-  <your-registry>/costweb:latest \
-  /bin/sh -lc 'cd /app && ln -sf /app/data/assets.db ./assets.db && exec /app/costweb'
+  -e DB_PATH=/app/data/assets.db \
+  <your-registry>/costweb:latest
 ```
 
 多架构镜像构建并推送：

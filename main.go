@@ -111,7 +111,15 @@ type app struct {
 func main() {
 	ctx := context.Background()
 
-	db, err := sql.Open("sqlite", "file:assets.db?_pragma=foreign_keys(1)")
+	dbPath := os.Getenv("DB_PATH")
+	if dbPath == "" {
+		dbPath = "assets.db"
+	}
+	if err := os.MkdirAll(filepath.Dir(dbPath), 0o755); err != nil && filepath.Dir(dbPath) != "." {
+		log.Fatalf("prepare database dir: %v", err)
+	}
+
+	db, err := sql.Open("sqlite", fmt.Sprintf("file:%s?_pragma=foreign_keys(1)", dbPath))
 	if err != nil {
 		log.Fatalf("open database: %v", err)
 	}
