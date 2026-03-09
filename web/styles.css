@@ -589,8 +589,9 @@ h1 {
 
 .card-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(min(100%, var(--asset-card-width)), 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, var(--asset-card-width)), 1fr));
     gap: var(--grid-gap);
+    justify-content: start;
 }
 
 .asset-card {
@@ -599,7 +600,9 @@ h1 {
     min-height: 0;
     aspect-ratio: 1 / 1;
     display: grid;
+    grid-template-rows: auto 1fr;
     gap: 12px;
+    overflow: hidden;
     cursor: pointer;
 }
 
@@ -607,6 +610,12 @@ h1 {
 .asset-headline,
 .asset-headline > div {
     min-width: 0;
+}
+
+.card-main {
+    display: grid;
+    grid-template-rows: auto auto auto 1fr auto;
+    align-content: start;
 }
 
 .card-top {
@@ -676,10 +685,12 @@ h1 {
 }
 
 .asset-sold {
-    min-height: 0;
+    min-height: 1.4em;
+    max-height: 2.8em;
     font-size: 0.66rem;
     line-height: 1.2;
     word-break: break-word;
+    overflow: hidden;
 }
 
 .charts-grid {
