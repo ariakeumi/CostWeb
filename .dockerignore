@@ -1,0 +1,7 @@
+.git
+.gitignore
+assets.db
+costweb
+*.db
+*.db-shm
+*.db-wal

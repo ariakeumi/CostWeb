@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>CostWeb</title>
+    <link
+      rel="icon"
+      href='data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><text y=".9em" font-size="90">💰</text></svg>'
+    />
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body>
+    <div class="app-shell">
+      <div class="desktop-layout">
+        <aside class="sidebar">
+          <div class="sidebar-brand">
+            <p class="brand-title">CostWeb</p>
+          </div>
+
+          <section class="summary-card">
+            <div class="summary-grid">
+              <div class="summary-metric">
+                <p class="metric-label">总资产</p>
+                <p class="metric-value" id="totalAssetValue">¥0.00</p>
+              </div>
+              <div class="summary-metric">
+                <p class="metric-label">平均日耗</p>
+                <p class="metric-value" id="averageDailyValue">¥0.00</p>
+              </div>
+            </div>
+
+            <div class="status-bars" id="statusBars"></div>
+          </section>
+
+          <section id="chartsView">
+            <div class="charts-grid">
+              <article class="chart-card">
+                <div class="chart-head">
+                  <div>
+                    <p class="panel-title">资产价值趋势</p>
+                    <p class="trend-highlight" id="assetValueTrendCurrent">¥0.00</p>
+                  </div>
+                </div>
+                <div class="trend-chart" id="assetValueTrendChart"></div>
+              </article>
+
+              <article class="chart-card">
+                <div class="chart-head">
+                  <div>
+                    <p class="panel-title">按分类价值占比</p>
+                  </div>
+                </div>
+                <div class="bars-chart" id="categoryBars"></div>
+              </article>
+            </div>
+          </section>
+        </aside>
+
+        <main class="content">
+          <div class="modal-backdrop" id="modalBackdrop" hidden></div>
+
+          <section class="form-panel" id="formPanel">
+            <div class="panel-head">
+              <div>
+                <p class="panel-title" id="panelTitle">新增资产</p>
+                <p class="panel-subtitle">支持编辑、删除、售出价格/日期与分类字段。</p>
+              </div>
+              <button class="ghost-btn small-btn" id="cancelEditBtn" type="button" hidden>取消编辑</button>
+            </div>
+
+            <form id="assetForm" class="asset-form">
+              <input type="hidden" name="id" />
+              <input type="hidden" name="icon" />
+
+              <div class="form-icon-row">
+                <button class="form-icon-preview" id="formIconTrigger" type="button" aria-label="选择图标">📦</button>
+                <p class="panel-subtitle">点击这里可选择 emoji 图标。</p>
+              </div>
+
+              <div class="form-row">
+                <label>
+                  <span>物品名称</span>
+                  <input name="name" placeholder="例如：MacBook Air M4" required />
+                </label>
+                <label>
+                  <span>资产分类</span>
+                  <input name="category" placeholder="例如：数码 / 家居 / 影像" />
+                </label>
+              </div>
+
+              <div class="form-row">
+                <label>
+                  <span>购入价格</span>
+                  <input name="price" type="number" min="0" step="0.01" placeholder="4669" required />
+                </label>
+                <label>
+                  <span>购入日期</span>
+                  <input name="purchaseDate" type="date" min="1900-01-01" max="9999-12-31" required />
+                </label>
+              </div>
+
+              <div class="form-row">
+                <label>
+                  <span>资产状态</span>
+                  <select name="status" id="statusField">
+                    <option value="active">服役中</option>
+                    <option value="idle">已闲置</option>
+                    <option value="sold">已售出</option>
+                  </select>
+                </label>
+                <label>
+                  <span>售出价格</span>
+                  <input name="soldPrice" id="soldPriceField" type="number" min="0" step="0.01" placeholder="1600" />
+                </label>
+              </div>
+
+              <label>
+                <span>售出日期</span>
+                <input name="soldDate" id="soldDateField" type="date" min="1900-01-01" max="9999-12-31" />
+              </label>
+
+              <div class="form-actions">
+                <button class="primary-btn" type="submit" id="submitBtn">保存资产</button>
+                <button class="danger-btn" type="button" id="deleteBtn" hidden>删除</button>
+                <p class="form-hint" id="formHint"></p>
+              </div>
+            </form>
+          </section>
+
+          <section class="emoji-picker" id="emojiPicker" hidden>
+            <div class="emoji-picker-head">
+              <p class="panel-title">选择图标</p>
+              <button class="ghost-btn small-btn" id="closeEmojiPickerBtn" type="button">关闭</button>
+            </div>
+            <div class="emoji-input-row">
+              <input id="emojiInput" type="text" placeholder="可直接粘贴 Emoji" maxlength="16" />
+              <button class="ghost-btn small-btn" id="applyEmojiBtn" type="button">应用</button>
+            </div>
+            <div class="emoji-grid" id="emojiGrid"></div>
+          </section>
+
+          <section class="controls">
+            <div class="control-group">
+              <div class="filters" id="filters"></div>
+              <div class="toolbar-actions">
+                <div class="search-box" id="searchBox" hidden>
+                  <input id="searchInput" type="search" placeholder="搜索物品" />
+                </div>
+                <button class="icon-btn" id="searchToggleBtn" type="button" aria-label="搜索">
+                  <svg class="tool-icon" viewBox="0 0 24 24" aria-hidden="true">
+                    <circle cx="11" cy="11" r="5.5" fill="none" stroke="currentColor" stroke-width="1.8" />
+                    <path d="M15.5 15.5L20 20" fill="none" stroke="currentColor" stroke-linecap="round" stroke-width="1.8" />
+                  </svg>
+                </button>
+                <div class="menu-wrap">
+                  <button class="icon-btn" id="sortMenuBtn" type="button" aria-label="排序">
+                    <svg class="tool-icon" viewBox="0 0 24 24" aria-hidden="true">
+                      <path
+                        d="M5 7h14M5 12h10M5 17h6"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-linecap="round"
+                        stroke-width="1.8"
+                      />
+                    </svg>
+                  </button>
+                  <section class="sort-menu" id="sortSwitch" hidden></section>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <section id="dashboardView">
+            <section class="card-grid" id="assetGrid"></section>
+          </section>
+
+        </main>
+      </div>
+    </div>
+
+    <button class="floating-create-btn" id="toggleFormBtn" type="button" aria-label="录入资产">+</button>
+
+    <template id="assetCardTemplate">
+      <article class="asset-card">
+        <div class="card-top">
+          <button class="asset-icon" type="button" aria-label="选择图标"></button>
+          <button class="status-chip" type="button"></button>
+        </div>
+
+        <div class="card-main">
+          <div class="asset-headline">
+            <div>
+              <p class="asset-category"></p>
+              <h3 class="asset-name"></h3>
+            </div>
+          </div>
+          <p class="asset-meta"></p>
+          <p class="asset-daily"></p>
+          <p class="asset-sold"></p>
+        </div>
+      </article>
+    </template>
+
+    <script src="/app.js" defer></script>
+  </body>
+</html>
