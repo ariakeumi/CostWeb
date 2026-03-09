@@ -37,29 +37,6 @@ env GOCACHE=/tmp/go-build go test ./...
 
 ## Docker
 
-容器默认以 `root` 用户运行。
-
-单架构本地构建：
-
-```bash
-docker build -t costweb:local .
-docker run --rm -p 8080:8080 costweb:local
-```
-
-使用 Docker CLI 并持久化 SQLite 数据：
-
-```bash
-mkdir -p ./data
-docker run -d \
-  --name costweb \
-  -p 8080:8080 \
-  -v "$(pwd)/data:/app/data" \
-  -e DB_PATH=/app/data/assets.db \
-  costweb:local
-```
-
-如果你是直接拉取 Docker Hub 镜像：
-
 ```bash
 docker run -d \
   --name costweb \
