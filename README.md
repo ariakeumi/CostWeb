@@ -13,6 +13,10 @@
 - 分类统计：按分类聚合数量、总价值、平均日耗
 - 图表页：分类价值条形图与月度购入趋势图
 
+![image-20260309225243196](image-20260309225243196.png)
+
+![image-20260309225231607](image-20260309225231607.png)
+
 ## 运行
 
 ```bash
@@ -57,49 +61,9 @@ docker run -d \
 如果你是直接拉取 Docker Hub 镜像：
 
 ```bash
-mkdir -p ./data
 docker run -d \
   --name costweb \
-  -p 8080:8080 \
-  -v "$(pwd)/data:/app/data" \
+  -p 8085:8080 \
+  -v $(pwd)/data:/app/data \
   -e DB_PATH=/app/data/assets.db \
-  <your-registry>/costweb:latest
-```
-
-多架构镜像构建并推送：
-
-```bash
-docker buildx build \
-  --platform linux/amd64,linux/arm64 \
-  -t <your-registry>/costweb:latest \
-  --push .
-```
-
-## GitHub Actions 自动推送 Docker Hub
-
-已提供工作流：
-
-[`docker-publish.yml`](/Users/umi/Documents/CostWeb/.github/workflows/docker-publish.yml)
-
-默认行为：
-
-- 推送到 `main` 分支时自动构建
-- 推送 `v*` tag 时自动构建
-- 构建 `linux/amd64` 和 `linux/arm64`
-- 自动推送到 Docker Hub
-
-需要在 GitHub 仓库 `Settings -> Secrets and variables -> Actions` 里添加：
-
-- `DOCKERHUB_USERNAME`
-- `DOCKERHUB_TOKEN`
-
-其中 `DOCKERHUB_TOKEN` 建议使用 Docker Hub 的 Access Token，不要直接用密码。
-
-如果你的默认分支不是 `main`，把工作流里的：
-
-```yaml
-branches:
-  - main
-```
-
-改成你的实际分支名，例如 `master`。
+  q000q000/costweb:latest
