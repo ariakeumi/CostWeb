@@ -42,6 +42,30 @@ docker build -t costweb:local .
 docker run --rm -p 8080:8080 costweb:local
 ```
 
+使用 Docker CLI 并持久化 SQLite 数据：
+
+```bash
+mkdir -p ./data
+docker run -d \
+  --name costweb \
+  -p 8080:8080 \
+  -v "$(pwd)/data:/app/data" \
+  costweb:local \
+  /bin/sh -lc 'cd /app && ln -sf /app/data/assets.db ./assets.db && exec /app/costweb'
+```
+
+如果你是直接拉取 Docker Hub 镜像：
+
+```bash
+mkdir -p ./data
+docker run -d \
+  --name costweb \
+  -p 8080:8080 \
+  -v "$(pwd)/data:/app/data" \
+  <your-registry>/costweb:latest \
+  /bin/sh -lc 'cd /app && ln -sf /app/data/assets.db ./assets.db && exec /app/costweb'
+```
+
 多架构镜像构建并推送：
 
 ```bash
