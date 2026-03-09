@@ -13,9 +13,11 @@
 - 分类统计：按分类聚合数量、总价值、平均日耗
 - 图表页：分类价值条形图与月度购入趋势图
 
-![image-20260309225243196](image-20260309225243196.png)
+![screenshot-desktop](screenshot-desktop.png)
 
-![image-20260309225231607](image-20260309225231607.png)
+![screenshot-phone](image/screenshot-phone.png)
+
+
 
 ## 运行
 
